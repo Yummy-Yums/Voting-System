@@ -18,6 +18,10 @@ contract ProposalContract {
         _;
     }
 
+    function terminateProposal() external onlyOwner active {
+        proposal_history[counter].is_active = false;
+    }
+
     modifier newVoter(address _address) {
         require(!isVoted(_address), "Address has already voted");
         _;
@@ -96,6 +100,23 @@ contract ProposalContract {
         } else {
             return false;
         }
+    }
+
+    function isVoted(address _address) public view returns (bool) {
+        for (uint i = 0; i < voted_addresses.length; i++) {
+            if (voted_addresses[i] == _address) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    function getCurrentProposal() external view returns(Proposal memory){
+        return proposal_history[counter];
+    }
+
+    function getProposal(uint256 number) external view returns(Proposal memory) {
+        return proposal_history[number];
     }
 }
 
